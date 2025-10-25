@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Saya - Linket{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="color: var(--dark-blue-1); font-weight: 800; font-size: 2rem; margin: 0;">
+            Etalase Saya
+        </h2>
+        <a href="{% url 'add_product' %}" class="btn btn-secondary">+ Tambah Produk Baru</a>
+    </div>
+    
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.get_cover_image }}" alt="{{ product.name }}" class="product-card-img">
+                <div class="product-card-content">
+                    <h3 class="product-card-name">{{ product.name }}</h3>
+                    <div class="product-card-price">Rp {{ product.price|floatformat:0 }}</div>
+                    <div class="product-card-store">🏬 {{ product.store_name|default:'Nama Toko' }}</div>
+                    
+                    <a href="{{ product.product_link }}" target="_blank" class="btn" style="margin-top: 1rem;">
+                        Lihat Link
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p>Kamu belum menambahkan produk apapun.</p>
+            <a href="{% url 'add_product' %}" class="btn">Mulai Tambahkan Sekarang!</a>
+        {% endfor %}
+    </div>
+{% endblock %}

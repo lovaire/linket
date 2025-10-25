@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Linket{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <h2>Login ke Linket</h2>
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <button type="submit" class="btn" style="width: 100%;">Login</button>
+        <p style="margin-top: 1.5rem; text-align: center;">
+            Belum punya akun? <a href="{% url 'register' %}" style="color: var(--teal-1); font-weight: 700;">Daftar di sini</a>
+        </p>
+    </form>
+{% endblock %}

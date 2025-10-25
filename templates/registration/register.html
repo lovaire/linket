@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Linket{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <h2>Buat Akun Linket</h2>
+        <p>Gabung gratis dan mulai bagikan link kamu.</p>
+        {% csrf_token %}
+        
+        <p>
+            <label for="id_username">Username</label>
+            {{ form.username }}
+        </p>
+        <p>
+            <label for="id_display_name">Display Name (Nama Publik)</label>
+            {{ form.display_name }}
+            <small class="helptext">{{ form.display_name.help_text }}</small>
+        </p>
+        <p>
+            <label for="id_email">Email</label>
+            {{ form.email }}
+        </p>
+        <p>
+            <label for="id_password1">Password</label>
+            {{ form.password1 }}
+        </p>
+        <p>
+            <label for="id_password2">Konfirmasi Password</label>
+            {{ form.password2 }}
+        </p>
+
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p style="color: red; font-weight: 600;">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                 <p style="color: red; font-weight: 600;">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+        
+        <button type="submit" class="btn" style="width: 100%;">Buat Akun</button>
+    </form>
+{% endblock %}

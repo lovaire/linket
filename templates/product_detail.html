@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Linket{% endblock %}
+
+{% block content %}
+<div style="background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 2rem; display: flex; gap: 2rem;">
+    
+    <div style="flex: 1;">
+        {% for image_url in product.get_image_list %}
+            <img src="{{ image_url }}" alt="Gambar {{ product.name }}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--grey-light);">
+        {% empty %}
+            <img src="{{ product.get_cover_image }}" alt="Gambar {{ product.name }}" style="width: 100%; border-radius: 8px;">
+        {% endfor %}
+    </div>
+    
+    <div style="flex: 1.5; padding-left: 1rem;">
+        
+        <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--dark-blue-1); margin-top: 0; margin-bottom: 0.5rem;">
+            {{ product.name }}
+        </h1>
+        
+        <div style="font-size: 2rem; font-weight: 800; color: var(--dark-blue-2); margin-bottom: 1rem;">
+            Rp {{ product.price|floatformat:0 }}
+        </div>
+        
+        <div style="font-size: 1.2rem; font-weight: 600; color: #f39c12; margin-bottom: 1.5rem;">
+            ⭐ {{ product.rating }}/5.0
+        </div>
+        
+        <div style="border-top: 1px solid #eee; padding-top: 1.5rem; margin-bottom: 1.5rem; font-size: 0.95rem;">
+            <p style="margin: 0 0 0.5rem 0; font-weight: 600;">
+                🏬 Nama Toko: <span style="font-weight: 400;">{{ product.store_name|default:'-' }}</span>
+            </p>
+            <p style="margin: 0; font-weight: 600;">
+                👤 Affiliator: <span style="font-weight: 400;">{{ product.affiliator.display_name|default:product.affiliator.username }}</span>
+            </p>
+        </div>
+        
+        <h3 style="font-weight: 700; color: var(--dark-blue-1);">Deskripsi Produk</h3>
+        <p style="line-height: 1.6; color: var(--text-dark);">
+            {{ product.description|linebreaks }}
+        </p>
+        
+        <a href="{{ product.product_link }}" target="_blank" class="btn" style="width: 100%; text-align: center; padding: 1rem; font-size: 1.2rem; margin-top: 2rem;">
+            🛒 Kunjungi Toko
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Linket - Marketplace Link Afiliasi{% endblock %}
+
+{% block content %}
+    <h2 style="color: var(--dark-blue-1); font-weight: 800; font-size: 2rem; margin-bottom: 2rem;">
+        Produk Terbaru
+    </h2>
+    
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                
+                <a href="{% url 'product_detail' pk=product.pk %}">
+                    <img src="{{ product.get_cover_image }}" alt="{{ product.name }}" class="product-card-img">
+                </a>
+                
+                <div class="product-card-content">
+                    
+                    <a href="{% url 'product_detail' pk=product.pk %}" style="text-decoration: none; color: inherit;">
+                        <h3 class="product-card-name">{{ product.name }}</h3>
+                    </a>
+                    
+                    <div class="product-card-price">Rp {{ product.price|floatformat:0 }}</div>
+                    
+                    <div class="product-card-rating" style="margin-bottom: 0.5rem; font-weight: 600; color: #f39c12; font-size: 0.9rem;">
+                        ⭐ {{ product.rating }}/5.0
+                    </div>
+                    
+                    <div class="product-card-store">🏬 {{ product.store_name|default:'Nama Toko' }}</div>
+                    
+                    <div class="product-card-affiliator" style="margin-bottom: 1rem;">
+                        👤 {{ product.affiliator.display_name|default:product.affiliator.username }}
+                    </div>
+                    
+                    <a href="{% url 'product_detail' pk=product.pk %}" class="btn" style="margin-top: auto; width: 100%; text-align: center; box-sizing: border-box;">
+                        Lihat Detail
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p>Belum ada produk yang ditambahkan. Jadilah yang pertama!</p>
+        {% endfor %}
+    </div>
+{% endblock %}
