@@ -56,9 +56,11 @@
             color: var(--teal-1);
         }
         
+        /* Desktop: Menu horizontal */
         nav .nav-links {
             display: flex;
             align-items: center;
+            gap: 0;
         }
 
         nav .nav-links a {
@@ -74,7 +76,7 @@
             color: var(--teal-2);
         }
 
-        /* Tombol Logout - HANYA gunakan .btn */
+        /* Form logout di desktop */
         nav .nav-links form {
             margin: 0;
             padding: 0;
@@ -97,14 +99,7 @@
             padding: 0;
         }
 
-        /* ----- KONTEN ----- */
-        .container {
-            max-width: 1200px;
-            margin: 2.5rem auto;
-            padding: 0 1rem;
-        }
-        
-        /* Tombol (Button) */
+        /* Tombol Umum */
         .btn {
             background-color: var(--teal-1);
             color: var(--white);
@@ -123,8 +118,8 @@
             background-color: var(--teal-2);
             transform: translateY(-2px);
         }
-        
-        /* Style Form */
+
+        /* Form Umum */
         form {
             background: var(--white); 
             padding: 2.5rem; 
@@ -134,7 +129,6 @@
             margin: 2rem auto;
         }
         
-        /* Khusus form di navbar, jangan pakai style di atas */
         nav form {
             background: none;
             padding: 0;
@@ -144,22 +138,9 @@
             margin: 0;
         }
         
-        form h2 { 
-            margin-top: 0; 
-            color: var(--dark-blue-1); 
-        }
-        
-        form p { 
-            margin-bottom: 1.5rem; 
-        }
-        
-        form label { 
-            display: block; 
-            margin-bottom: 0.5rem; 
-            font-weight: 600; 
-            font-size: 0.9rem; 
-        }
-        
+        form h2 { margin-top: 0; color: var(--dark-blue-1); }
+        form p { margin-bottom: 1.5rem; }
+        form label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
         form input[type="text"], 
         form input[type="email"], 
         form input[type="password"],
@@ -173,19 +154,10 @@
             font-family: 'Plus Jakarta Sans', sans-serif; 
             font-size: 1rem;
         }
-        
-        form textarea { 
-            min-height: 100px; 
-        }
-        
-        form .helptext { 
-            font-size: 0.85rem; 
-            color: var(--grey-dark); 
-            margin-top: -1rem; 
-            margin-bottom: 1.5rem; 
-        }
+        form textarea { min-height: 100px; }
+        form .helptext { font-size: 0.85rem; color: var(--grey-dark); margin-top: -1rem; margin-bottom: 1.5rem; }
 
-        /* ----- GRID KARTU (Tidak berubah) ----- */
+        /* GRID KARTU */
         .product-grid { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
         .product-card {
             background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -205,24 +177,15 @@
             color: var(--text-dark); display: -webkit-box; -webkit-line-clamp: 2;
             -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; 
         }
-        .product-card-price {
-            font-size: 1.1rem; font-weight: 800; color: var(--dark-blue-1);
-            margin-bottom: 0.25rem;
-        }
-        .product-card-info {
-            font-size: 0.8rem; color: var(--grey-dark); font-weight: 600;
-            margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .product-card-rating {
-            font-size: 0.8rem; color: #f39c12; font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+        .product-card-price { font-size: 1.1rem; font-weight: 800; color: var(--dark-blue-1); margin-bottom: 0.25rem; }
+        .product-card-info { font-size: 0.8rem; color: var(--grey-dark); font-weight: 600; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-card-rating { font-size: 0.8rem; color: #f39c12; font-weight: 600; margin-bottom: 0.5rem; }
         .product-card-content .btn {
             margin-top: auto; width: 100%; text-align: center;
             padding: 0.5rem 0.5rem; font-size: 0.8rem;
         }
 
-        /* ----- MEDIA QUERIES (Responsif) ----- */
+        /* RESPONSIVE GRID */
         @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 900px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1200px) {
@@ -235,43 +198,48 @@
             .product-card-content .btn { font-size: 0.85rem; }
         }
 
-        /* Aturan untuk Navbar Responsif */
-                /* Aturan untuk Navbar Responsif */
+        /* ===== MOBILE NAVBAR (≤768px) ===== */
         @media (max-width: 768px) {
             .burger-menu {
-                display: block; 
+                display: block;
             }
-            
+
+            /* Sembunyikan menu, jadi dropdown */
             .nav-links {
-                display: none; 
-                flex-direction: column;
-                background-color: var(--dark-blue-2);
                 position: absolute;
                 top: 100%;
                 left: 0;
                 width: 100%;
-                padding: 0;
+                background-color: var(--dark-blue-2);
+                flex-direction: column;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.1);
                 z-index: 1000;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+                max-height: 0;
+                transition: max-height 0.3s ease;
             }
-            
+
             .nav-links.active {
-                display: flex;
+                max-height: 1000px; /* cukup besar */
             }
-            
-            /* ---- SEMUA LINK & TOMBOL DI DROPDOWN ---- */
+
+            /* Semua link & form full width */
             nav .nav-links a,
             nav .nav-links form {
-                margin: 0;
                 width: 100%;
+                margin: 0;
             }
 
             nav .nav-links a {
+                display: block;
                 padding: 1rem 2rem;
                 text-align: left;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                display: block;
+                color: white;
                 font-weight: 600;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                text-decoration: none;
             }
 
             /* Register Button */
@@ -279,7 +247,6 @@
                 background-color: var(--teal-1);
                 color: white;
                 border-radius: 0;
-                text-align: left;
                 padding: 1rem 2rem;
                 font-weight: 700;
                 border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -296,35 +263,25 @@
                 text-align: left;
                 font-weight: 700;
                 cursor: pointer;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
                 font-size: 1rem;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
 
-            /* Hover untuk link biasa */
+            /* Hover */
             nav .nav-links a:not(.btn):hover {
                 background-color: var(--dark-blue-1);
             }
 
-            /* Hover untuk tombol (Register & Logout) */
             nav .nav-links a.btn:hover,
             nav .nav-links form button.btn:hover {
                 background-color: var(--teal-2);
             }
 
-            /* Matikan transform hover di mobile */
+            /* Matikan transform di mobile */
             nav .nav-links a.btn:hover,
             nav .nav-links form button.btn:hover {
                 transform: none;
             }
-        }
-        .nav-links {
-            transition: all 0.3s ease;
-            max-height: 0;
-            overflow: hidden;
-        }
-
-        .nav-links.active {
-            max-height: 500px; /* cukup besar */
         }
     </style>
 </head>
@@ -364,25 +321,25 @@
         document.addEventListener('DOMContentLoaded', function() {
             const burgerMenu = document.getElementById('burgerMenu');
             const navLinks = document.getElementById('navLinks');
-            const links = navLinks.querySelectorAll('a, button');
+            const allLinks = navLinks.querySelectorAll('a, button');
 
             if (burgerMenu && navLinks) {
-                // Toggle menu saat klik burger
+                // Toggle menu
                 burgerMenu.addEventListener('click', function(e) {
                     e.stopPropagation();
                     navLinks.classList.toggle('active');
                 });
 
-                // Tutup menu saat klik link atau tombol
-                links.forEach(link => {
+                // Tutup saat klik link/tombol
+                allLinks.forEach(link => {
                     link.addEventListener('click', () => {
                         navLinks.classList.remove('active');
                     });
                 });
 
-                // Tutup menu saat klik di luar
-                document.addEventListener('click', function(event) {
-                    if (!navLinks.contains(event.target) && !burgerMenu.contains(event.target)) {
+                // Tutup saat klik di luar
+                document.addEventListener('click', function(e) {
+                    if (!navLinks.contains(e.target) && !burgerMenu.contains(e.target)) {
                         navLinks.classList.remove('active');
                     }
                 });
