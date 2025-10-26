@@ -9,11 +9,43 @@ from .forms import ProductForm
 # 🏠 TAMPILAN HOME (Semua Produk)
 # ---------------------------------
 class HomeView(ListView):
-    model = Product # Ambil data dari model Product
+    model = Product
     template_name = 'home.html'
-    context_object_name = 'products' # Nama variabel di HTML
-    ordering = ['-created_at'] # Urutkan dari yang terbaru
+    context_object_name = 'products'
+    ordering = ['-created_at']
+    paginate_by = 18 # (Opsional: bagus untuk membatasi jumlah produk per halaman)
 
+    def get_queryset(self):
+        # Ambil query pencarian dari URL (misal: ?q=headset)
+        search_query = self.request.GET.get('q', None)
+        # Ambil query kategori (misal: ?category=elektronik)
+        category_query = self.request.GET.get('category', None)
+        
+        # Mulai dengan semua produk
+        queryset = super().get_queryset()
+
+        if search_query:
+            # Filter nama ATAU deskripsi yang mengandung query
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
+
+        if category_query and category_query != 'all':
+            # Filter berdasarkan kategori yang dipilih
+            queryset = queryset.filter(category=category_query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        # Fungsi ini untuk mengirim data tambahan ke template
+        context = super().get_context_data(**kwargs)
+        # Kirim daftar kategori ke template
+        context['categories'] = CATEGORY_CHOICES
+        # Kirim nilai pencarian agar form tetap terisi
+        context['search_query'] = self.request.GET.get('q', '')
+        context['selected_category'] = self.request.GET.get('category', 'all')
+        return context
 # ---------------------------------
 # 🔒 TAMPILAN DASHBOARD (Produk Milik Sendiri)
 # ---------------------------------

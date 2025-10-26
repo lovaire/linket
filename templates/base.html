@@ -289,6 +289,66 @@
                 transform: none;
             }
         }
+        @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+            /* ... (sisanya biarkan) ... */
+
+
+            /* ----- TAMBAHKAN STYLE BARU INI DI BAWAHNYA ----- */
+            
+            /* 1. PERBAIKAN HALAMAN DETAIL PRODUK */
+            .product-detail-container {
+                background: var(--white);
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                padding: 2.5rem;
+                display: flex;
+                gap: 2rem;
+            }
+            .product-detail-gallery { flex: 1; }
+            .product-detail-info { flex: 1.5; padding-left: 1rem; }
+
+            /* 2. STYLE UNTUK FORM SEARCH & FILTER */
+            .search-filter-form {
+                display: flex;
+                flex-wrap: wrap; /* Agar responsif di mobile */
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+            .search-filter-form input,
+            .search-filter-form select {
+                /* Samakan dengan style form lainnya */
+                padding: 0.85rem; 
+                border: 1px solid #ccc; 
+                border-radius: 8px;
+                font-family: 'Plus Jakarta Sans', sans-serif; 
+                font-size: 1rem;
+                flex: 1; /* Agar input & select mengisi ruang */
+                min-width: 150px; /* Lebar minimum */
+            }
+            .search-filter-form input {
+                flex: 2; /* Buat search bar lebih lebar */
+                min-width: 200px;
+            }
+            .search-filter-form button {
+                flex: 0.5; /* Buat tombol 'Cari' */
+            }
+
+            /* ----- MEDIA QUERIES (RESPONSIF) ----- */
+            @media (max-width: 768px) {
+                /* ... (style .container, .burger-menu, .nav-links kamu biarkan) ... */
+
+                /* PERBAIKAN HALAMAN DETAIL DI MOBILE */
+                .product-detail-container {
+                    flex-direction: column; /* Konten jadi ke bawah */
+                    padding: 1.5rem 1rem;
+                }
+                .product-detail-info { 
+                    padding-left: 0; /* Hapus padding kiri */
+                }
+                .product-detail-gallery img {
+                    width: 100%; /* Buat gambar jadi full-width */
+                }
+            }
     </style>
 </head>
 <body>

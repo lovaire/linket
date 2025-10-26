@@ -7,11 +7,26 @@
         Produk Terbaru
     </h2>
     
+    <form method="GET" action="{% url 'home' %}" class="search-filter-form">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Cari produk...">
+        
+        <select name="category">
+            <option value="all" {% if selected_category == 'all' %}selected{% endif %}>Semua Kategori</option>
+            {% for value, display in categories %}
+                <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                    {{ display }}
+                </option>
+            {% endfor %}
+        </select>
+        
+        <button type="submit" class="btn">Cari</button>
+    </form>
+    
     <div class="product-grid">
         {% for product in products %}
             <div class="product-card">
                 
-                <a href="{% url 'product_detail' pk=product.pk %}">
+                <a href="{% url 'product_detail' pk=product.pk %}" class="product-card-img-link">
                     <img src="{{ product.get_cover_image }}" alt="{{ product.name }}" class="product-card-img">
                 </a>
                 
@@ -23,23 +38,34 @@
                     
                     <div class="product-card-price">Rp {{ product.price|floatformat:0 }}</div>
                     
-                    <div class="product-card-rating" style="margin-bottom: 0.5rem; font-weight: 600; color: #f39c12; font-size: 0.9rem;">
+                    <div class="product-card-rating">
                         ⭐ {{ product.rating }}/5.0
                     </div>
                     
-                    <div class="product-card-store">🏬 {{ product.store_name|default:'Nama Toko' }}</div>
+                    <div class="product-card-info">
+                        🏬 {{ product.store_name|default:'Nama Toko' }}
+                    </div>
                     
-                    <div class="product-card-affiliator" style="margin-bottom: 1rem;">
+                    <div class="product-card-info" style="margin-bottom: 1rem;">
                         👤 {{ product.affiliator.display_name|default:product.affiliator.username }}
                     </div>
                     
-                    <a href="{% url 'product_detail' pk=product.pk %}" class="btn" style="margin-top: auto; width: 100%; text-align: center; box-sizing: border-box;">
+                    <a href="{% url 'product_detail' pk=product.pk %}" class="btn" style="margin-top: auto;">
                         Lihat Detail
                     </a>
                 </div>
             </div>
         {% empty %}
-            <p>Belum ada produk yang ditambahkan. Jadilah yang pertama!</p>
+            {% if search_query or selected_category != 'all' %}
+                <p style="grid-column: 1 / -1; text-align: center;">
+                    Produk tidak ditemukan. Coba ganti kata kunci atau kategori.
+                </p>
+            {% else %}
+                <p style="grid-column: 1 / -1; text-align: center;">
+                    Belum ada produk yang ditambahkan. Jadilah yang pertama!
+                </p>
+            {% endif %}
+            
         {% endfor %}
     </div>
 {% endblock %}
