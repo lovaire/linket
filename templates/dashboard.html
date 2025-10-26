@@ -13,15 +13,32 @@
     <div class="product-grid">
         {% for product in products %}
             <div class="product-card">
-                <img src="{{ product.get_cover_image }}" alt="{{ product.name }}" class="product-card-img">
+                <a href="{% url 'product_detail' pk=product.pk %}">
+                    <img src="{{ product.get_cover_image }}" alt="{{ product.name }}" class="product-card-img">
+                </a>
+                
                 <div class="product-card-content">
                     <h3 class="product-card-name">{{ product.name }}</h3>
                     <div class="product-card-price">Rp {{ product.price|floatformat:0 }}</div>
-                    <div class="product-card-store">🏬 {{ product.store_name|default:'Nama Toko' }}</div>
+                    <div class="product-card-info">🏬 {{ product.store_name|default:'Nama Toko' }}</div>
                     
-                    <a href="{{ product.product_link }}" target="_blank" class="btn" style="margin-top: 1rem;">
-                        Lihat Link
+                    <a href="{% url 'product_detail' pk=product.pk %}" class="btn" style="margin-top: auto; margin-bottom: 0.5rem;">
+                        Lihat Detail
                     </a>
+                    
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'product_edit' pk=product.pk %}" 
+                           class="btn" 
+                           style="flex: 1; background-color: var(--dark-blue-2); font-size: 0.8rem; padding: 0.5rem;">
+                           Edit
+                        </a>
+                        <a href="{% url 'product_delete' pk=product.pk %}" 
+                           class="btn" 
+                           style="flex: 1; background-color: #e74c3c; font-size: 0.8rem; padding: 0.5rem;">
+                           Hapus
+                        </a>
+                    </div>
+                    
                 </div>
             </div>
         {% empty %}

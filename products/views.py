@@ -51,3 +51,43 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'product_detail.html'
     context_object_name = 'product'
+
+# products/views.py
+
+# 1. Tambahkan UpdateView, DeleteView, dan UserPassesTestMixin
+from django.views.generic import (
+    ListView, CreateView, DetailView, UpdateView, DeleteView
+)
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+# ... (sisa impor lainnya)
+
+
+# ... (Biarkan HomeView, DashboardView, AddProductView, ProductDetailView) ...
+
+
+# ---------------------------------
+# ✏️ TAMBAHKAN CLASS UNTUK UPDATE
+# ---------------------------------
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_edit.html' # Kita akan buat file ini
+    success_url = reverse_lazy('dashboard')
+
+    def test_func(self):
+        # Fungsi keamanan: Cek apakah produk ini milik user yang sedang login
+        product = self.get_object()
+        return product.affiliator == self.request.user
+
+# ---------------------------------
+# 🗑️ TAMBAHKAN CLASS UNTUK DELETE
+# ---------------------------------
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Product
+    template_name = 'product_delete_confirm.html' # Kita akan buat file ini
+    success_url = reverse_lazy('dashboard')
+
+    def test_func(self):
+        # Fungsi keamanan: Cek apakah produk ini milik user yang sedang login
+        product = self.get_object()
+        return product.affiliator == self.request.user

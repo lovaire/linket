@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Hapus Produk - Linket{% endblock %}
+
+{% block content %}
+    <form method="post" style="text-align: center;">
+        <h2>Konfirmasi Hapus</h2>
+        {% csrf_token %}
+        
+        <p style="font-size: 1.2rem;">
+            Apakah kamu yakin ingin menghapus produk ini?
+        </p>
+        
+        <h3 style="color: var(--dark-blue-1);">{{ product.name }}</h3>
+        
+        <p>Tindakan ini tidak bisa dibatalkan.</p>
+        
+        <button type="submit" class="btn" style="background-color: #e74c3c;">
+            Ya, Hapus
+        </button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="margin-left: 1rem;">
+            Batal
+        </a>
+    </form>
+{% endblock %}

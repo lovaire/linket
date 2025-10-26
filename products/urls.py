@@ -1,6 +1,7 @@
 # products/urls.py
 from django.urls import path
 from .views import HomeView, DashboardView, AddProductView, ProductDetailView
+from .views import ProductUpdateView, ProductDeleteView
 
 urlpatterns = [
     # Ini membuat URL halaman utama: /
@@ -13,4 +14,6 @@ urlpatterns = [
     path('add/', AddProductView.as_view(), name='add_product'),
 
     path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    path('product/<int:pk>/edit/', ProductUpdateView.as_view(), name='product_edit'),
+    path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
 ]
