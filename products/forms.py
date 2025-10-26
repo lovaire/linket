@@ -9,22 +9,21 @@ class ProductForm(forms.ModelForm):
             'name', 
             'price', 
             'store_name',
-            'category',  # <-- TAMBAHKAN INI
+            'category',        # ← Hanya nama field
             'image_urls', 
             'description', 
             'product_link', 
             'rating'
         ]
         
+        # products/forms.py
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Contoh: Headset Gaming Keren'}),
-            'price': forms.NumberInput(attrs={'placeholder': 'Contoh: 150000 (tanpa titik)'}),
-            'store_name': forms.TextInput(attrs={'placeholder': 'Contoh: Toko Jaya Abadi'}),
-            
-            # Django otomatis render 'category' sebagai dropdown
-            
-            'image_urls': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Satu URL gambar per baris...'}),
-            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Deskripsi singkat produk...'}),
-            'product_link': forms.URLInput(attrs={'placeholder': 'https://s.shopee.co.id/link-afiliasi-kamu'}),
-            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5, 'step': 0.1, 'placeholder': 'Contoh: 4.8'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Contoh: Headset Gaming Keren'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Contoh: 150000'}),
+            'store_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Contoh: Toko Jaya Abadi'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),  # INI PENTING!
+            'image_urls': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Satu URL per baris...'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Deskripsi singkat...'}),
+            'product_link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://s.shopee.co.id/...'}),
+            'rating': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5, 'step': 0.1, 'placeholder': '4.8'}),
         }

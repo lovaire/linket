@@ -2,24 +2,162 @@
 
 {% block title %}Tambah Produk - Linket{% endblock %}
 
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 1.8rem;
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 1.3rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #34495e;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1.5px solid #d1d8e0;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background-color: #f8fafc;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+    }
+
+    /* Dropdown Styling */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2em;
+        padding-right: 2.5rem;
+    }
+
+    select.form-control:focus {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233498db'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3icom/svg%3e");
+    }
+
+    /* Textarea */
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Help text */
+    .helptext {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+        margin-top: 0.4rem;
+        display: block;
+    }
+
+    /* Error */
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 0.4rem 0 0;
+    }
+
+    .errorlist li {
+        color: #e74c3c;
+        font-size: 0.85rem;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 0.9rem;
+        margin-top: 1.5rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background: #2980b9;
+    }
+
+    .btn-submit:active {
+        transform: translateY(1px);
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .form-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="form-container">
+    <h2 class="form-title">Tambah Produk Afiliasi Baru</h2>
+
     <form method="post" novalidate>
-        <h2>Tambah Produk Afiliasi Baru</h2>
         {% csrf_token %}
-        
+
         {% for field in form %}
-            <p>
-                {{ field.label_tag }}
+            <div class="form-group">
+                {{ field.label_tag|capfirst }}
+
+                <!-- HANYA {{ field }} – class sudah dari forms.py -->
                 {{ field }}
+
                 {% if field.help_text %}
                     <small class="helptext">{{ field.help_text }}</small>
                 {% endif %}
-                {% for error in field.errors %}
-                    <small style="color: red;">{{ error }}</small>
-                {% endfor %}
-            </p>
+
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
         {% endfor %}
-        
-        <button type="submit" class="btn">Simpan Produk</button>
+
+        <button type="submit" class="btn-submit">Simpan Produk</button>
     </form>
+</div>
 {% endblock %}
