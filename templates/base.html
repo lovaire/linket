@@ -32,7 +32,7 @@
             box-sizing: border-box;
         }
 
-        /* ----- NAVIGASI ----- */
+        /* ----- NAVIGASI (Tidak berubah) ----- */
         nav {
             background-color: var(--dark-blue-1);
             color: var(--white);
@@ -44,25 +44,20 @@
             position: relative;
             z-index: 1000;
         }
-        
         nav .logo {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--white);
             text-decoration: none;
         }
-        
         nav .logo span {
             color: var(--teal-1);
         }
-        
-        /* Desktop: Menu horizontal */
         nav .nav-links {
             display: flex;
             align-items: center;
             gap: 0;
         }
-
         nav .nav-links a {
             color: var(--white);
             text-decoration: none;
@@ -71,24 +66,19 @@
             font-size: 0.95rem;
             transition: color 0.2s;
         }
-        
         nav .nav-links a:hover {
             color: var(--teal-2);
         }
-
-        /* Form logout di desktop */
         nav .nav-links form {
             margin: 0;
             padding: 0;
             display: inline;
         }
-
         @media (min-width: 769px) {
             nav .nav-links form button.btn {
                 margin-left: 1.5rem;
             }
         }
-
         .burger-menu {
             display: none;
             font-size: 2rem;
@@ -99,7 +89,19 @@
             padding: 0;
         }
 
-        /* Tombol Umum */
+        /* ----- KONTEN (INI YANG DIPERBAIKI) ----- */
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            
+            /* --- INI PERBAIKANNYA --- */
+            background-color: var(--white); /* 1. Beri latar belakang putih */
+            border-radius: 12px;           /* 2. Samakan sudutnya dgn card */
+            padding: 2.5rem;               /* 3. Beri jarak 2.5rem di SEMUA sisi */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        /* Tombol Umum (Tidak berubah) */
         .btn {
             background-color: var(--teal-1);
             color: var(--white);
@@ -113,13 +115,12 @@
             display: inline-block;
             transition: background-color 0.2s, transform 0.2s;
         }
-        
         .btn:hover {
             background-color: var(--teal-2);
             transform: translateY(-2px);
         }
 
-        /* Form Umum */
+        /* Form Umum (Tidak berubah) */
         form {
             background: var(--white); 
             padding: 2.5rem; 
@@ -128,7 +129,6 @@
             max-width: 550px; 
             margin: 2rem auto;
         }
-        
         nav form {
             background: none;
             padding: 0;
@@ -137,7 +137,6 @@
             max-width: none;
             margin: 0;
         }
-        
         form h2 { margin-top: 0; color: var(--dark-blue-1); }
         form p { margin-bottom: 1.5rem; }
         form label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
@@ -157,7 +156,7 @@
         form textarea { min-height: 100px; }
         form .helptext { font-size: 0.85rem; color: var(--grey-dark); margin-top: -1rem; margin-bottom: 1.5rem; }
 
-        /* GRID KARTU */
+        /* GRID KARTU (Tidak berubah) */
         .product-grid { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
         .product-card {
             background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -185,7 +184,7 @@
             padding: 0.5rem 0.5rem; font-size: 0.8rem;
         }
 
-        /* RESPONSIVE GRID */
+        /* RESPONSIVE GRID (Tidak berubah) */
         @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 900px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1200px) {
@@ -200,6 +199,13 @@
 
         /* ===== MOBILE NAVBAR (≤768px) ===== */
         @media (max-width: 768px) {
+            
+            /* PERBAIKAN PADDING CONTAINER DI MOBILE */
+            .container {
+                padding: 1.5rem 1rem; /* Padding lebih kecil di mobile */
+                margin: 1.5rem 1rem;  /* Margin lebih kecil di mobile */
+            }
+
             .burger-menu {
                 display: block;
             }
