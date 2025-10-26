@@ -1,0 +1,12 @@
+# Abaikan file database lokal
+db.sqlite3
+
+# Abaikan file-file cache Python
+__pycache__/
+
+# Abaikan file virtual environment
+venv/
+
+# INI YANG PALING PENTING:
+# Abaikan file settings.py di dalam folder 'linket'
+linket/settings.py
