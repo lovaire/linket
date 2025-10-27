@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 
 # Import models dan form DI ATAS
-from .models import CATEGORY_CHOICES, Product
+from .models import CATEGORY_CHOICES, Product, MARKETPLACE_CHOICES
 from .forms import ProductForm
 
 
@@ -24,6 +24,7 @@ class HomeView(ListView):
     def get_queryset(self):
         search_query = self.request.GET.get('q', None)
         category_query = self.request.GET.get('category', None)
+        marketplace_query = self.request.GET.get('marketplace', None)
         
         queryset = super().get_queryset()
 
@@ -36,13 +37,18 @@ class HomeView(ListView):
         if category_query and category_query != 'all':
             queryset = queryset.filter(category=category_query)
 
+        if marketplace_query and marketplace_query != 'all': # <-- Tambah blok ini
+            queryset = queryset.filter(marketplace=marketplace_query)
+
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = CATEGORY_CHOICES  # Sekarang aman!
+        context['marketplaces'] = MARKETPLACE_CHOICES
         context['search_query'] = self.request.GET.get('q', '')
         context['selected_category'] = self.request.GET.get('category', 'all')
+        context['selected_marketplace'] = self.request.GET.get('marketplace', 'all')
         return context
 
 

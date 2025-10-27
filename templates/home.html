@@ -18,6 +18,15 @@
                 </option>
             {% endfor %}
         </select>
+
+        <select name="marketplace">
+            <option value="all" {% if selected_marketplace == 'all' %}selected{% endif %}>Semua Marketplace</option>
+            {% for value, display in marketplaces %}
+                <option value="{{ value }}" {% if selected_marketplace == value %}selected{% endif %}>
+                    {{ display }}
+                </option>
+            {% endfor %}
+        </select>
         
         <button type="submit" class="btn">Cari</button>
     </form>
@@ -44,6 +53,10 @@
                     
                     <div class="product-card-info">
                         🏬 {{ product.store_name|default:'Nama Toko' }}
+                    </div>
+
+                    <div class="product-card-info">
+                        🛍️ {{ product.get_marketplace_display }}
                     </div>
                     
                     <div class="product-card-info" style="margin-bottom: 1rem;">

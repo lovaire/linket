@@ -10,6 +10,7 @@ class ProductForm(forms.ModelForm):
             'price', 
             'store_name',
             'category',        # ← Hanya nama field
+            'marketplace',
             'image_urls', 
             'description', 
             'product_link', 

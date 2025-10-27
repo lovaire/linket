@@ -21,6 +21,17 @@ CATEGORY_CHOICES = [
     ('lainnya', 'Lainnya'),
 ]
 
+
+MARKETPLACE_CHOICES = [
+    ('shopee', 'Shopee'),
+    ('tokopedia', 'Tokopedia'),
+    ('lazada', 'Lazada'),
+    ('blibli', 'Blibli'),
+    ('tiktok_shop', 'TikTok Shop'),
+    ('bukalapak', 'Bukalapak'),
+    ('lainnya', 'Lainnya'),
+]
+
 class Product(models.Model):
     affiliator = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
@@ -36,6 +47,12 @@ class Product(models.Model):
     category = models.CharField(
         max_length=50,
         choices=CATEGORY_CHOICES,
+        default='lainnya'
+    )
+
+    marketplace = models.CharField(
+        max_length=50,
+        choices=MARKETPLACE_CHOICES,
         default='lainnya'
     )
     
