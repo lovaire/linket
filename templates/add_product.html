@@ -4,54 +4,58 @@
 
 {% block extra_css %}
 <style>
+    /* Gunakan font utama website */
     .form-container {
         max-width: 700px;
         margin: 2rem auto;
-        padding: 2rem;
-        background: #ffffff;
+        padding: 2.5rem; /* Samakan padding */
+        background: var(--white); /* Gunakan variabel warna */
         border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Shadow lebih halus */
+        font-family: 'Plus Jakarta Sans', sans-serif; /* <-- FONT UTAMA */
     }
 
     .form-title {
         text-align: center;
-        margin-bottom: 1.8rem;
-        color: #2c3e50;
+        margin-bottom: 2rem;
+        color: var(--dark-blue-1); /* Gunakan variabel warna */
         font-size: 1.8rem;
-        font-weight: 600;
+        font-weight: 700; /* Lebih tebal */
     }
 
     .form-group {
-        margin-bottom: 1.3rem;
+        margin-bottom: 1.5rem; /* Sedikit lebih lega */
     }
 
     .form-label {
         display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #34495e;
-        font-size: 0.95rem;
+        margin-bottom: 0.6rem; /* Jarak label ke input */
+        font-weight: 600; /* Lebih tebal */
+        color: var(--dark-blue-2); /* Warna lebih gelap */
+        font-size: 0.9rem;
     }
 
+    /* Style input yang lebih menyatu */
     .form-control {
         width: 100%;
-        padding: 0.75rem 1rem;
+        padding: 0.85rem 1rem; /* Padding konsisten */
         font-size: 1rem;
         border: 1.5px solid #d1d8e0;
         border-radius: 8px;
-        transition: all 0.2s ease;
-        background-color: #f8fafc;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        background-color: var(--grey-light); /* Background abu muda */
+        color: var(--text-dark);
+        font-family: 'Plus Jakarta Sans', sans-serif; /* <-- FONT UTAMA */
     }
 
     .form-control:focus {
         outline: none;
-        border-color: #3498db;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        border-color: var(--teal-1); /* Warna focus dari tema */
+        background-color: var(--white);
+        box-shadow: 0 0 0 3px rgba(47, 169, 172, 0.15); /* Shadow focus warna tema */
     }
 
-    /* Dropdown Styling */
+    /* Dropdown Styling (Sudah bagus, hanya warna focus disesuaikan) */
     select.form-control {
         appearance: none;
         background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
@@ -62,66 +66,52 @@
     }
 
     select.form-control:focus {
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233498db'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3icom/svg%3e");
+         /* Ganti warna panah saat focus */
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232fa9ac'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
     }
 
-    /* Textarea */
+    /* Textarea (Sudah bagus) */
     textarea.form-control {
         min-height: 100px;
         resize: vertical;
     }
 
-    /* Help text */
+    /* Help text (Sudah bagus) */
     .helptext {
-        color: #7f8c8d;
+        color: var(--grey-dark);
         font-size: 0.85rem;
-        margin-top: 0.4rem;
+        margin-top: 0.5rem;
         display: block;
     }
 
-    /* Error */
+    /* Error (Sudah bagus) */
     .errorlist {
         list-style: none;
         padding: 0;
-        margin: 0.4rem 0 0;
+        margin: 0.5rem 0 0;
     }
-
     .errorlist li {
         color: #e74c3c;
         font-size: 0.85rem;
     }
 
-    /* Submit Button */
+    /* Submit Button - GUNAKAN CLASS .btn dari base.html */
     .btn-submit {
+        /* Hapus style lama .btn-submit */
+        /* Cukup tambahkan style spesifik jika perlu */
         display: block;
         width: 100%;
-        padding: 0.9rem;
-        margin-top: 1.5rem;
-        background: #3498db;
-        color: white;
-        border: none;
-        border-radius: 8px;
+        margin-top: 2rem;
+        padding: 0.9rem; /* Sedikit lebih besar */
         font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s ease;
     }
 
-    .btn-submit:hover {
-        background: #2980b9;
-    }
-
-    .btn-submit:active {
-        transform: translateY(1px);
-    }
-
-    /* Responsive */
+    /* Responsive (Sudah bagus) */
     @media (max-width: 576px) {
         .form-container {
             margin: 1rem;
             padding: 1.5rem;
         }
-
         .form-title {
             font-size: 1.5rem;
         }
@@ -138,10 +128,27 @@
 
         {% for field in form %}
             <div class="form-group">
-                {{ field.label_tag|capfirst }}
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
 
-                <!-- HANYA {{ field }} – class sudah dari forms.py -->
-                {{ field }}
+                {% if field.field.widget.input_type == 'select' %}
+                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">
+                        {% for value, text in field.field.choices %}
+                            <option value="{{ value }}" {% if field.value == value %}selected{% endif %}>{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                {% elif field.field.widget.input_type == 'textarea' %}
+                     <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control" rows="4">{{ field.value|default:"" }}</textarea>
+                {% else %}
+                    <input type="{{ field.field.widget.input_type }}" 
+                           name="{{ field.name }}" 
+                           id="{{ field.id_for_label }}" 
+                           class="form-control" 
+                           value="{{ field.value|default:"" }}"
+                           placeholder="{{ field.field.widget.attrs.placeholder|default:"" }}"
+                           {% if field.field.widget.attrs.min %}min="{{ field.field.widget.attrs.min }}"{% endif %}
+                           {% if field.field.widget.attrs.max %}max="{{ field.field.widget.attrs.max }}"{% endif %}
+                           {% if field.field.widget.attrs.step %}step="{{ field.field.widget.attrs.step }}"{% endif %}>
+                {% endif %}
 
                 {% if field.help_text %}
                     <small class="helptext">{{ field.help_text }}</small>
@@ -157,7 +164,7 @@
             </div>
         {% endfor %}
 
-        <button type="submit" class="btn-submit">Simpan Produk</button>
+        <button type="submit" class="btn btn-submit">Simpan Produk</button>
     </form>
 </div>
 {% endblock %}
