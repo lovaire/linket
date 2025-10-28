@@ -46,8 +46,8 @@
 
                 {% if field.name == 'image_urls' %}
                     <div id="image-url-list"></div>
-                    <!-- Penting: isi dengan field.value -->
-                    <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="display:none;">{{ field.value|default:"" }}</textarea>
+                    <!-- Biarkan Django render field asli -->
+                    {{ field }}
                     {% if field.help_text %}
                         <small class="helptext">{{ field.help_text }}</small>
                     {% endif %}
@@ -85,7 +85,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Fungsi untuk membuat input baru
+    // 🔽 Sembunyikan textarea asli dari Django
+    hiddenTextarea.style.display = 'none';
+
     function createInput(url = '') {
         const div = document.createElement('div');
         div.className = 'image-url-item';
@@ -99,19 +101,16 @@ document.addEventListener('DOMContentLoaded', function () {
         removeBtn.textContent = 'Hapus';
         removeBtn.type = 'button';
 
-        // Hapus item saat tombol diklik
         removeBtn.addEventListener('click', () => {
             div.remove();
-            saveToTextarea();
+            updateTextarea();
         });
 
-        // Saat input berubah, cek apakah perlu tambah input baru
         input.addEventListener('input', () => {
-            saveToTextarea();
-            // Jika ini input terakhir dan sudah diisi, tambah input baru
-            const allInputs = container.querySelectorAll('input');
-            const isLast = div === allInputs[allInputs.length - 1].closest('.image-url-item');
-            if (isLast && input.value.trim() !== '') {
+            updateTextarea();
+            const inputs = container.querySelectorAll('input');
+            const lastInput = inputs[inputs.length - 1];
+            if (input === lastInput && input.value.trim() !== '') {
                 createInput();
             }
         });
@@ -121,8 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         container.appendChild(div);
     }
 
-    // Simpan semua URL ke textarea tersembunyi
-    function saveToTextarea() {
+    function updateTextarea() {
         const urls = Array.from(container.querySelectorAll('input'))
             .map(el => el.value.trim())
             .filter(val => val !== '');
@@ -130,25 +128,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // === INISIALISASI ===
-    // Baca nilai awal dari textarea (misal saat edit)
     const initialUrls = (hiddenTextarea.value || '')
         .split('\n')
         .map(s => s.trim())
         .filter(s => s);
 
-    // Render input berdasarkan data awal
     if (initialUrls.length > 0) {
         initialUrls.forEach(url => createInput(url));
+    } else {
+        createInput(); // minimal satu input
     }
 
-    // Jika tidak ada data, buat satu input kosong
-    if (initialUrls.length === 0) {
-        createInput();
-    }
-
-    // Pastikan textarea terupdate saat submit
     if (form) {
-        form.addEventListener('submit', saveToTextarea);
+        form.addEventListener('submit', updateTextarea);
     }
 });
 </script>
