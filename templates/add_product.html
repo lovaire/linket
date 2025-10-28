@@ -4,117 +4,79 @@
 
 {% block extra_css %}
 <style>
-    /* Gunakan font utama website */
-    .form-container {
-        max-width: 700px;
-        margin: 2rem auto;
-        padding: 2.5rem; /* Samakan padding */
-        background: var(--white); /* Gunakan variabel warna */
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Shadow lebih halus */
-        font-family: 'Plus Jakarta Sans', sans-serif; /* <-- FONT UTAMA */
+    /* ... (CSS form-container, form-title, dll dari sebelumnya biarkan saja) ... */
+
+    /* ===== STYLE BARU UNTUK INPUT GAMBAR DINAMIS ===== */
+    #image-url-list {
+        margin-top: 0.5rem; /* Jarak dari label */
     }
 
-    .form-title {
-        text-align: center;
-        margin-bottom: 2rem;
-        color: var(--dark-blue-1); /* Gunakan variabel warna */
-        font-size: 1.8rem;
-        font-weight: 700; /* Lebih tebal */
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem; /* Sedikit lebih lega */
-    }
-
-    .form-label {
-        display: block;
-        margin-bottom: 0.6rem; /* Jarak label ke input */
-        font-weight: 600; /* Lebih tebal */
-        color: var(--dark-blue-2); /* Warna lebih gelap */
-        font-size: 0.9rem;
-    }
-
-    /* Style input yang lebih menyatu */
-    .form-control {
-        width: 100%;
-        padding: 0.85rem 1rem; /* Padding konsisten */
-        font-size: 1rem;
-        border: 1.5px solid #d1d8e0;
+    .image-url-item {
+        display: flex;
+        align-items: center; /* Sejajarkan item secara vertikal */
+        gap: 0.75rem; /* Jarak antar elemen */
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        border: 1px dashed #e0e0e0; /* Border putus-putus */
         border-radius: 8px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        background-color: var(--grey-light); /* Background abu muda */
-        color: var(--text-dark);
-        font-family: 'Plus Jakarta Sans', sans-serif; /* <-- FONT UTAMA */
+        background-color: #f9f9f9;
+        transition: background-color 0.2s;
+    }
+    .image-url-item:hover {
+        background-color: #f1f1f1;
     }
 
-    .form-control:focus {
-        outline: none;
-        border-color: var(--teal-1); /* Warna focus dari tema */
-        background-color: var(--white);
-        box-shadow: 0 0 0 3px rgba(47, 169, 172, 0.15); /* Shadow focus warna tema */
+    .image-url-item .image-preview {
+        flex-shrink: 0; /* Jangan biarkan preview mengecil */
+        width: 60px;
+        height: 60px;
+        border-radius: 6px;
+        background-color: #eee;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden; /* Sembunyikan jika gambar terlalu besar */
     }
-
-    /* Dropdown Styling (Sudah bagus, hanya warna focus disesuaikan) */
-    select.form-control {
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1.2em;
-        padding-right: 2.5rem;
-    }
-
-    select.form-control:focus {
-         /* Ganti warna panah saat focus */
-        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232fa9ac'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-    }
-
-    /* Textarea (Sudah bagus) */
-    textarea.form-control {
-        min-height: 100px;
-        resize: vertical;
-    }
-
-    /* Help text (Sudah bagus) */
-    .helptext {
-        color: var(--grey-dark);
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-        display: block;
-    }
-
-    /* Error (Sudah bagus) */
-    .errorlist {
-        list-style: none;
-        padding: 0;
-        margin: 0.5rem 0 0;
-    }
-    .errorlist li {
-        color: #e74c3c;
-        font-size: 0.85rem;
-    }
-
-    /* Submit Button - GUNAKAN CLASS .btn dari base.html */
-    .btn-submit {
-        /* Hapus style lama .btn-submit */
-        /* Cukup tambahkan style spesifik jika perlu */
-        display: block;
+    .image-url-item .image-preview img { /* Opsi jika pakai tag img */
         width: 100%;
-        margin-top: 2rem;
-        padding: 0.9rem; /* Sedikit lebih besar */
-        font-size: 1.1rem;
+        height: 100%;
+        object-fit: cover;
     }
 
-    /* Responsive (Sudah bagus) */
-    @media (max-width: 576px) {
-        .form-container {
-            margin: 1rem;
-            padding: 1.5rem;
-        }
-        .form-title {
-            font-size: 1.5rem;
-        }
+    .image-url-item input.form-control {
+        flex-grow: 1; /* Biarkan input mengisi sisa ruang */
+        margin-bottom: 0; /* Hapus margin bawah default */
+    }
+
+    .image-url-actions {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column; /* Tombol atas bawah */
+        gap: 0.3rem;
+    }
+
+    .image-url-actions button {
+        background: none;
+        border: 1px solid #ccc;
+        color: #555;
+        border-radius: 4px;
+        padding: 0.2rem 0.4rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        line-height: 1; /* Agar panah pas */
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .image-url-actions button:hover {
+        background-color: #eee;
+    }
+    .image-url-actions button.btn-delete:hover {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+        color: white;
+    }
+    /* Sembunyikan tombol yang tidak relevan */
+    .image-url-item:first-child .btn-move-up,
+    .image-url-item:last-child .btn-move-down {
+        visibility: hidden;
     }
 </style>
 {% endblock %}
@@ -123,35 +85,45 @@
 <div class="form-container">
     <h2 class="form-title">Tambah Produk Afiliasi Baru</h2>
 
-    <form method="post" novalidate>
+    <form method="post" novalidate id="product-form">
         {% csrf_token %}
 
         {% for field in form %}
             <div class="form-group">
                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
 
-                {% if field.field.widget.input_type == 'select' %}
-                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">
-                        {% for value, text in field.field.choices %}
-                            <option value="{{ value }}" {% if field.value == value %}selected{% endif %}>{{ text }}</option>
-                        {% endfor %}
-                    </select>
-                {% elif field.field.widget.input_type == 'textarea' %}
-                     <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control" rows="4">{{ field.value|default:"" }}</textarea>
+                {% if field.name == 'image_urls' %}
+                    <div id="image-url-list">
+                        </div>
+                    <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="display:none;"></textarea>
+                    {% if field.help_text %}
+                        <small class="helptext">{{ field.help_text }}</small>
+                    {% endif %}
                 {% else %}
-                    <input type="{{ field.field.widget.input_type }}" 
-                           name="{{ field.name }}" 
-                           id="{{ field.id_for_label }}" 
-                           class="form-control" 
-                           value="{{ field.value|default:"" }}"
-                           placeholder="{{ field.field.widget.attrs.placeholder|default:"" }}"
-                           {% if field.field.widget.attrs.min %}min="{{ field.field.widget.attrs.min }}"{% endif %}
-                           {% if field.field.widget.attrs.max %}max="{{ field.field.widget.attrs.max }}"{% endif %}
-                           {% if field.field.widget.attrs.step %}step="{{ field.field.widget.attrs.step }}"{% endif %}>
-                {% endif %}
-
-                {% if field.help_text %}
-                    <small class="helptext">{{ field.help_text }}</small>
+                    {% comment %} (Kode render input/select/textarea biasa) {% endcomment %}
+                    {% if field.field.widget.input_type == 'select' %}
+                        <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">
+                            {% for value, text in field.field.choices %}
+                                <option value="{{ value }}" {% if field.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elif field.field.widget.input_type == 'textarea' %}
+                         <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control" rows="4">{{ field.value|default:"" }}</textarea>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               class="form-control" 
+                               value="{{ field.value|default:"" }}"
+                               placeholder="{{ field.field.widget.attrs.placeholder|default:"" }}"
+                               {% if field.field.widget.attrs.min %}min="{{ field.field.widget.attrs.min }}"{% endif %}
+                               {% if field.field.widget.attrs.max %}max="{{ field.field.widget.attrs.max }}"{% endif %}
+                               {% if field.field.widget.attrs.step %}step="{{ field.field.widget.attrs.step }}"{% endif %}>
+                    {% endif %}
+                    
+                    {% if field.help_text and field.name != 'image_urls' %}
+                        <small class="helptext">{{ field.help_text }}</small>
+                    {% endif %}
                 {% endif %}
 
                 {% if field.errors %}
@@ -167,4 +139,176 @@
         <button type="submit" class="btn btn-submit">Simpan Produk</button>
     </form>
 </div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageListContainer = document.getElementById('image-url-list');
+    const hiddenTextarea = document.getElementById('id_image_urls'); // ID default Django
+    const productForm = document.getElementById('product-form');
+
+    // Fungsi untuk membuat elemen input baru
+    function createImageUrlItem(url = '') {
+        const div = document.createElement('div');
+        div.classList.add('image-url-item');
+
+        const previewDiv = document.createElement('div');
+        previewDiv.classList.add('image-preview');
+        if (url) {
+            previewDiv.style.backgroundImage = `url(${url})`;
+        }
+
+        const input = document.createElement('input');
+        input.type = 'url'; // Gunakan type URL agar ada validasi dasar
+        input.classList.add('form-control', 'image-url-input');
+        input.placeholder = 'https://url-gambar-produk.jpg';
+        input.value = url;
+
+        const actionsDiv = document.createElement('div');
+        actionsDiv.classList.add('image-url-actions');
+
+        const moveUpBtn = document.createElement('button');
+        moveUpBtn.type = 'button';
+        moveUpBtn.classList.add('btn-move-up');
+        moveUpBtn.innerHTML = '&#9650;'; // Panah atas
+        moveUpBtn.title = 'Geser ke atas';
+
+        const moveDownBtn = document.createElement('button');
+        moveDownBtn.type = 'button';
+        moveDownBtn.classList.add('btn-move-down');
+        moveDownBtn.innerHTML = '&#9660;'; // Panah bawah
+        moveDownBtn.title = 'Geser ke bawah';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.classList.add('btn-delete');
+        deleteBtn.innerHTML = '&#10005;'; // Simbol X
+        deleteBtn.title = 'Hapus';
+
+        actionsDiv.appendChild(moveUpBtn);
+        actionsDiv.appendChild(moveDownBtn);
+        actionsDiv.appendChild(deleteBtn);
+
+        div.appendChild(previewDiv);
+        div.appendChild(input);
+        div.appendChild(actionsDiv);
+        
+        imageListContainer.appendChild(div);
+        updateActionListeners(div); // Tambahkan listener ke item baru
+        updateHiddenTextarea(); // Update nilai textarea tersembunyi
+        checkAndAddNewInput(); // Cek apakah perlu input baru
+    }
+
+    // Fungsi untuk menambah listener ke tombol-tombol
+    function updateActionListeners(itemDiv) {
+        const input = itemDiv.querySelector('.image-url-input');
+        const previewDiv = itemDiv.querySelector('.image-preview');
+        const deleteBtn = itemDiv.querySelector('.btn-delete');
+        const moveUpBtn = itemDiv.querySelector('.btn-move-up');
+        const moveDownBtn = itemDiv.querySelector('.btn-move-down');
+
+        // Listener untuk input baru saat user mengetik
+        input.addEventListener('input', () => {
+             // Update preview saat mengetik (opsional, bisa diganti 'blur')
+            const url = input.value.trim();
+             previewDiv.style.backgroundImage = url ? `url(${url})` : 'none'; 
+            checkAndAddNewInput();
+            updateHiddenTextarea();
+        });
+        
+        // Listener untuk preview saat input kehilangan fokus (lebih efisien)
+        input.addEventListener('blur', () => {
+             const url = input.value.trim();
+             previewDiv.style.backgroundImage = url ? `url(${url})` : 'none'; 
+        });
+
+        // Hapus item
+        deleteBtn.addEventListener('click', () => {
+            itemDiv.remove();
+            checkAndAddNewInput(); // Pastikan selalu ada 1 input kosong jika semua dihapus
+            updateHiddenTextarea();
+        });
+
+        // Geser ke atas
+        moveUpBtn.addEventListener('click', () => {
+            const previous = itemDiv.previousElementSibling;
+            if (previous) {
+                imageListContainer.insertBefore(itemDiv, previous);
+                updateHiddenTextarea();
+            }
+        });
+
+        // Geser ke bawah
+        moveDownBtn.addEventListener('click', () => {
+            const next = itemDiv.nextElementSibling;
+            if (next) {
+                imageListContainer.insertBefore(next, itemDiv);
+                updateHiddenTextarea();
+            }
+        });
+    }
+
+    // Fungsi untuk cek apakah perlu input baru
+    function checkAndAddNewInput() {
+        const inputs = imageListContainer.querySelectorAll('.image-url-input');
+        const lastInput = inputs[inputs.length - 1];
+        // Jika tidak ada input sama sekali, atau input terakhir tidak kosong
+        if (!lastInput || lastInput.value.trim() !== '') {
+            createImageUrlItem();
+        }
+        updateButtonVisibility(); // Update visibilitas tombol panah
+    }
+
+    // Fungsi untuk update visibilitas tombol panah
+    function updateButtonVisibility() {
+         const items = imageListContainer.querySelectorAll('.image-url-item');
+         items.forEach((item, index) => {
+             const upBtn = item.querySelector('.btn-move-up');
+             const downBtn = item.querySelector('.btn-move-down');
+             if (upBtn) upBtn.style.visibility = (index === 0) ? 'hidden' : 'visible';
+             if (downBtn) downBtn.style.visibility = (index === items.length - 1) ? 'hidden' : 'visible';
+             // Khusus untuk item terakhir yang kosong, sembunyikan semua tombol
+             if (index === items.length - 1 && item.querySelector('.image-url-input').value.trim() === '') {
+                 if (upBtn) upBtn.style.visibility = 'hidden';
+                 if (downBtn) downBtn.style.visibility = 'hidden';
+                 // Sembunyikan tombol delete juga jika hanya ada 1 input kosong
+                 const deleteBtn = item.querySelector('.btn-delete');
+                 if(deleteBtn && items.length === 1) deleteBtn.style.visibility = 'hidden';
+                 else if(deleteBtn) deleteBtn.style.visibility = 'visible';
+             } else {
+                 const deleteBtn = item.querySelector('.btn-delete');
+                  if(deleteBtn) deleteBtn.style.visibility = 'visible';
+             }
+         });
+    }
+
+
+    // Fungsi untuk mengumpulkan URL dan update textarea tersembunyi
+    function updateHiddenTextarea() {
+        const urls = [];
+        const inputs = imageListContainer.querySelectorAll('.image-url-input');
+        inputs.forEach(input => {
+            const url = input.value.trim();
+            if (url) { // Hanya tambahkan URL yang tidak kosong
+                urls.push(url);
+            }
+        });
+        hiddenTextarea.value = urls.join('\n'); // Gabungkan dengan baris baru
+        updateButtonVisibility();
+    }
+    
+    // Inisialisasi: Baca dari textarea jika ada nilai awal (misal saat edit)
+    const initialUrls = hiddenTextarea.value.split('\n').filter(url => url.trim() !== '');
+    if (initialUrls.length > 0) {
+        initialUrls.forEach(url => createImageUrlItem(url));
+    }
+    
+    // Selalu tambahkan satu input kosong di awal jika belum ada
+    checkAndAddNewInput();
+
+    // Pastikan textarea terupdate sebelum form disubmit
+    productForm.addEventListener('submit', updateHiddenTextarea);
+
+});
+</script>
 {% endblock %}
