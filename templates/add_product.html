@@ -144,10 +144,28 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const imageListContainer = document.getElementById('image-url-list');
-    const hiddenTextarea = document.getElementById('id_image_urls'); // ID default Django
+    const hiddenTextarea = document.getElementById('id_image_urls');
     const productForm = document.getElementById('product-form');
 
-    // Fungsi debounce untuk membatasi pemanggilan berulang
+    // 🔴 Validasi awal: cek apakah elemen penting ada
+    if (!imageListContainer || !hiddenTextarea) {
+        console.error('⛔ Elemen DOM tidak ditemukan!');
+        console.log('imageListContainer:', imageListContainer);
+        console.log('hiddenTextarea:', hiddenTextarea);
+        
+        // Tampilkan pesan error ke user (opsional)
+        if (imageListContainer) {
+            imageListContainer.innerHTML = `
+                <div style="color: red; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px;">
+                    ❌ Terjadi kesalahan: Input gambar tidak dapat dimuat.
+                    Silakan refresh halaman atau hubungi admin.
+                </div>
+            `;
+        }
+        return;
+    }
+
+    // Fungsi debounce
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -282,15 +300,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const isEmpty = input.value.trim() === '';
             const isLast = index === items.length - 1;
 
-            // Sembunyikan tombol panah di posisi ekstrem
             if (upBtn) upBtn.style.visibility = (index === 0) ? 'hidden' : 'visible';
             if (downBtn) downBtn.style.visibility = isLast ? 'hidden' : 'visible';
 
-            // Jika item terakhir kosong, sembunyikan semua tombol aksi
             if (isLast && isEmpty) {
                 if (upBtn) upBtn.style.visibility = 'hidden';
                 if (downBtn) downBtn.style.visibility = 'hidden';
-                // Sembunyikan tombol hapus jika hanya ada satu input kosong
                 if (deleteBtn) {
                     deleteBtn.style.visibility = (items.length === 1) ? 'hidden' : 'visible';
                 }
@@ -314,23 +329,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // === INISIALISASI ===
-    const initialUrls = hiddenTextarea.value
-        ? hiddenTextarea.value.split('\n').filter(url => url.trim() !== '')
-        : [];
+    try {
+        const initialUrls = hiddenTextarea.value
+            ? hiddenTextarea.value.split('\n').filter(url => url.trim() !== '')
+            : [];
 
-    if (initialUrls.length > 0) {
-        initialUrls.forEach(url => createImageUrlItem(url));
+        if (initialUrls.length > 0) {
+            initialUrls.forEach(url => createImageUrlItem(url));
+        }
+
+        // Tambahkan input kosong jika belum ada sama sekali
+        if (imageListContainer.querySelectorAll('.image-url-item').length === 0) {
+            createImageUrlItem();
+        }
+
+        // Pastikan textarea terupdate sebelum submit
+        productForm.addEventListener('submit', function(e) {
+            updateHiddenTextarea();
+        });
+
+        console.log('✅ Script Image URL berhasil dijalankan.');
+    } catch (error) {
+        console.error('❌ Error saat inisialisasi:', error);
+        imageListContainer.innerHTML = `
+            <div style="color: red; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px;">
+                ❌ Terjadi error: ${error.message}
+                Silakan refresh halaman atau hubungi admin.
+            </div>
+        `;
     }
-
-    // Tambahkan input kosong jika belum ada sama sekali
-    if (imageListContainer.querySelectorAll('.image-url-item').length === 0) {
-        createImageUrlItem();
-    }
-
-    // Pastikan textarea terupdate sebelum submit
-    productForm.addEventListener('submit', function(e) {
-        updateHiddenTextarea();
-    });
 });
 </script>
 {% endblock extra_js %}
