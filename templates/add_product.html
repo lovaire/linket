@@ -328,36 +328,29 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenTextarea.value = urls.join('\n');
     }
 
-    // === INISIALISASI ===
-    try {
-        const initialUrls = hiddenTextarea.value
-            ? hiddenTextarea.value.split('\n').filter(url => url.trim() !== '')
-            : [];
+        // === INISIALISASI YANG DIJAMIN JALAN ===
+    const initialText = hiddenTextarea.value || '';
+    const initialUrls = initialText
+        .split('\n')
+        .map(url => url.trim())
+        .filter(url => url !== '');
 
-        if (initialUrls.length > 0) {
-            initialUrls.forEach(url => createImageUrlItem(url));
-        }
+    // Buat input untuk setiap URL yang valid
+    initialUrls.forEach(url => {
+        createImageUrlItem(url);
+    });
 
-        // Tambahkan input kosong jika belum ada sama sekali
-        if (imageListContainer.querySelectorAll('.image-url-item').length === 0) {
-            createImageUrlItem();
-        }
-
-        // Pastikan textarea terupdate sebelum submit
-        productForm.addEventListener('submit', function(e) {
-            updateHiddenTextarea();
-        });
-
-        console.log('✅ Script Image URL berhasil dijalankan.');
-    } catch (error) {
-        console.error('❌ Error saat inisialisasi:', error);
-        imageListContainer.innerHTML = `
-            <div style="color: red; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px;">
-                ❌ Terjadi error: ${error.message}
-                Silakan refresh halaman atau hubungi admin.
-            </div>
-        `;
+    // Jika tidak ada URL sama sekali, buat satu input kosong
+    if (initialUrls.length === 0) {
+        createImageUrlItem(); // input kosong pertama
     }
+
+    // Tambahkan event submit jika form ada
+    if (productForm) {
+        productForm.addEventListener('submit', updateHiddenTextarea);
+    }
+
+    console.log('✅ Input gambar siap. Total URL:', initialUrls.length);
 });
 </script>
 {% endblock extra_js %}
