@@ -5,75 +5,30 @@
 {% block extra_css %}
 <style>
     #image-url-list {
-        margin-top: 0.5rem; /* Jarak dari label */
+        margin-top: 0.5rem;
     }
-
     .image-url-item {
         display: flex;
-        align-items: center; /* Sejajarkan item secara vertikal */
-        gap: 0.75rem; /* Jarak antar elemen */
-        margin-bottom: 1rem;
-        padding: 0.8rem;
-        border: 1px dashed #e0e0e0; /* Border putus-putus */
-        border-radius: 8px;
-        background-color: #f9f9f9;
-        transition: background-color 0.2s;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
     }
-    .image-url-item:hover {
-        background-color: #f1f1f1;
-    }
-
-    .image-url-item .image-preview {
-        flex-shrink: 0; /* Jangan biarkan preview mengecil */
-        width: 60px;
-        height: 60px;
-        border-radius: 6px;
-        background-color: #eee;
-        background-size: cover;
-        background-position: center;
-        overflow: hidden; /* Sembunyikan jika gambar terlalu besar */
-    }
-    .image-url-item .image-preview img { /* Opsi jika pakai tag img */
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .image-url-item input.form-control {
-        flex-grow: 1; /* Biarkan input mengisi sisa ruang */
-        margin-bottom: 0; /* Hapus margin bawah default */
-    }
-
-    .image-url-actions {
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column; /* Tombol atas bawah */
-        gap: 0.3rem;
-    }
-
-    .image-url-actions button {
-        background: none;
+    .image-url-item input {
+        flex: 1;
+        padding: 0.4rem 0.6rem;
         border: 1px solid #ccc;
-        color: #555;
         border-radius: 4px;
-        padding: 0.2rem 0.4rem;
-        font-size: 0.9rem;
-        cursor: pointer;
-        line-height: 1; /* Agar panah pas */
-        transition: background-color 0.2s, color 0.2s;
     }
-    .image-url-actions button:hover {
-        background-color: #eee;
-    }
-    .image-url-actions button.btn-delete:hover {
-        background-color: #e74c3c;
-        border-color: #e74c3c;
+    .image-url-item button {
+        padding: 0.4rem 0.6rem;
+        background: #e74c3c;
         color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
     }
-    /* Sembunyikan tombol yang tidak relevan */
-    .image-url-item:first-child .btn-move-up,
-    .image-url-item:last-child .btn-move-down {
-        visibility: hidden;
+    .image-url-item button:hover {
+        background: #c0392b;
     }
 </style>
 {% endblock extra_css %}
@@ -82,45 +37,23 @@
 <div class="form-container">
     <h2 class="form-title">Tambah Produk Afiliasi Baru</h2>
 
-    <form method="post" novalidate id="product-form">
+    <form method="post" id="product-form">
         {% csrf_token %}
 
         {% for field in form %}
             <div class="form-group">
-                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
 
                 {% if field.name == 'image_urls' %}
-                    <div id="image-url-list">
-                        <!-- Input URL gambar akan di-generate oleh JavaScript -->
-                    </div>
-                    <!-- Perbaikan utama: tambahkan nilai field.value ke textarea -->
+                    <div id="image-url-list"></div>
+                    <!-- Penting: isi dengan field.value -->
                     <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" style="display:none;">{{ field.value|default:"" }}</textarea>
                     {% if field.help_text %}
                         <small class="helptext">{{ field.help_text }}</small>
                     {% endif %}
                 {% else %}
-                    {% comment %} Render input/select/textarea biasa {% endcomment %}
-                    {% if field.field.widget.input_type == 'select' %}
-                        <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">
-                            {% for value, text in field.field.choices %}
-                                <option value="{{ value }}" {% if field.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>{{ text }}</option>
-                            {% endfor %}
-                        </select>
-                    {% elif field.field.widget.input_type == 'textarea' %}
-                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control">{{ field.value|default:"" }}</textarea>
-                    {% else %}
-                        <input type="{{ field.field.widget.input_type|default:'text' }}" 
-                               name="{{ field.name }}" 
-                               id="{{ field.id_for_label }}" 
-                               class="form-control" 
-                               value="{{ field.value|default:"" }}"
-                               placeholder="{{ field.field.widget.attrs.placeholder|default:"" }}"
-                               {% if field.field.widget.attrs.min %}min="{{ field.field.widget.attrs.min }}"{% endif %}
-                               {% if field.field.widget.attrs.max %}max="{{ field.field.widget.attrs.max }}"{% endif %}
-                               {% if field.field.widget.attrs.step %}step="{{ field.field.widget.attrs.step }}"{% endif %}>
-                    {% endif %}
-                    
-                    {% if field.help_text and field.name != 'image_urls' %}
+                    {{ field }}
+                    {% if field.help_text %}
                         <small class="helptext">{{ field.help_text }}</small>
                     {% endif %}
                 {% endif %}
@@ -142,215 +75,81 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const imageListContainer = document.getElementById('image-url-list');
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('image-url-list');
     const hiddenTextarea = document.getElementById('id_image_urls');
-    const productForm = document.getElementById('product-form');
+    const form = document.getElementById('product-form');
 
-    // 🔴 Validasi awal: cek apakah elemen penting ada
-    if (!imageListContainer || !hiddenTextarea) {
-        console.error('⛔ Elemen DOM tidak ditemukan!');
-        console.log('imageListContainer:', imageListContainer);
-        console.log('hiddenTextarea:', hiddenTextarea);
-        
-        // Tampilkan pesan error ke user (opsional)
-        if (imageListContainer) {
-            imageListContainer.innerHTML = `
-                <div style="color: red; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px;">
-                    ❌ Terjadi kesalahan: Input gambar tidak dapat dimuat.
-                    Silakan refresh halaman atau hubungi admin.
-                </div>
-            `;
-        }
+    if (!container || !hiddenTextarea) {
+        console.error('❌ Elemen image_urls tidak ditemukan.');
         return;
     }
 
-    // Fungsi debounce
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    // Fungsi untuk membuat elemen input baru
-    function createImageUrlItem(url = '') {
+    // Fungsi untuk membuat input baru
+    function createInput(url = '') {
         const div = document.createElement('div');
-        div.classList.add('image-url-item');
-
-        const previewDiv = document.createElement('div');
-        previewDiv.classList.add('image-preview');
-        if (url) {
-            previewDiv.style.backgroundImage = `url(${url})`;
-        }
+        div.className = 'image-url-item';
 
         const input = document.createElement('input');
         input.type = 'url';
-        input.classList.add('form-control', 'image-url-input');
-        input.placeholder = 'https://url-gambar-produk.jpg';
+        input.placeholder = 'https://contoh.com/gambar.jpg';
         input.value = url;
 
-        const actionsDiv = document.createElement('div');
-        actionsDiv.classList.add('image-url-actions');
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Hapus';
+        removeBtn.type = 'button';
 
-        const moveUpBtn = document.createElement('button');
-        moveUpBtn.type = 'button';
-        moveUpBtn.classList.add('btn-move-up');
-        moveUpBtn.innerHTML = '&#9650;';
-        moveUpBtn.title = 'Geser ke atas';
+        // Hapus item saat tombol diklik
+        removeBtn.addEventListener('click', () => {
+            div.remove();
+            saveToTextarea();
+        });
 
-        const moveDownBtn = document.createElement('button');
-        moveDownBtn.type = 'button';
-        moveDownBtn.classList.add('btn-move-down');
-        moveDownBtn.innerHTML = '&#9660;';
-        moveDownBtn.title = 'Geser ke bawah';
+        // Saat input berubah, cek apakah perlu tambah input baru
+        input.addEventListener('input', () => {
+            saveToTextarea();
+            // Jika ini input terakhir dan sudah diisi, tambah input baru
+            const allInputs = container.querySelectorAll('input');
+            const isLast = div === allInputs[allInputs.length - 1].closest('.image-url-item');
+            if (isLast && input.value.trim() !== '') {
+                createInput();
+            }
+        });
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.type = 'button';
-        deleteBtn.classList.add('btn-delete');
-        deleteBtn.innerHTML = '&#10005;';
-        deleteBtn.title = 'Hapus';
-
-        actionsDiv.appendChild(moveUpBtn);
-        actionsDiv.appendChild(moveDownBtn);
-        actionsDiv.appendChild(deleteBtn);
-
-        div.appendChild(previewDiv);
         div.appendChild(input);
-        div.appendChild(actionsDiv);
-
-        imageListContainer.appendChild(div);
-        updateActionListeners(div);
-        updateHiddenTextarea();
-        checkAndAddNewInput();
+        div.appendChild(removeBtn);
+        container.appendChild(div);
     }
 
-    // Fungsi untuk menambah listener ke tombol-tombol
-    function updateActionListeners(itemDiv) {
-        const input = itemDiv.querySelector('.image-url-input');
-        const previewDiv = itemDiv.querySelector('.image-preview');
-        const deleteBtn = itemDiv.querySelector('.btn-delete');
-        const moveUpBtn = itemDiv.querySelector('.btn-move-up');
-        const moveDownBtn = itemDiv.querySelector('.btn-move-down');
-
-        input.addEventListener('input', debounce(() => {
-            const url = input.value.trim();
-            previewDiv.style.backgroundImage = url ? `url(${url})` : 'none';
-            checkAndAddNewInput();
-            updateHiddenTextarea();
-        }, 300));
-
-        input.addEventListener('blur', () => {
-            const url = input.value.trim();
-            previewDiv.style.backgroundImage = url ? `url(${url})` : 'none';
-        });
-
-        deleteBtn.addEventListener('click', () => {
-            itemDiv.remove();
-            checkAndAddNewInput();
-            updateHiddenTextarea();
-        });
-
-        moveUpBtn.addEventListener('click', () => {
-            const previous = itemDiv.previousElementSibling;
-            if (previous) {
-                imageListContainer.insertBefore(itemDiv, previous);
-                updateHiddenTextarea();
-                updateButtonVisibility();
-            }
-        });
-
-        moveDownBtn.addEventListener('click', () => {
-            const next = itemDiv.nextElementSibling;
-            if (next) {
-                imageListContainer.insertBefore(next, itemDiv);
-                updateHiddenTextarea();
-                updateButtonVisibility();
-            }
-        });
-    }
-
-    // Fungsi untuk cek apakah perlu input baru
-    function checkAndAddNewInput() {
-        const inputs = imageListContainer.querySelectorAll('.image-url-input');
-        const lastInput = inputs[inputs.length - 1];
-
-        const hasEmptyInput = Array.from(inputs).some(input => input.value.trim() === '');
-
-        if (!hasEmptyInput && lastInput && lastInput.value.trim() !== '') {
-            createImageUrlItem();
-        }
-        updateButtonVisibility();
-    }
-
-    // Fungsi untuk update visibilitas tombol panah
-    function updateButtonVisibility() {
-        const items = imageListContainer.querySelectorAll('.image-url-item');
-        items.forEach((item, index) => {
-            const upBtn = item.querySelector('.btn-move-up');
-            const downBtn = item.querySelector('.btn-move-down');
-            const deleteBtn = item.querySelector('.btn-delete');
-            const input = item.querySelector('.image-url-input');
-
-            const isEmpty = input.value.trim() === '';
-            const isLast = index === items.length - 1;
-
-            if (upBtn) upBtn.style.visibility = (index === 0) ? 'hidden' : 'visible';
-            if (downBtn) downBtn.style.visibility = isLast ? 'hidden' : 'visible';
-
-            if (isLast && isEmpty) {
-                if (upBtn) upBtn.style.visibility = 'hidden';
-                if (downBtn) downBtn.style.visibility = 'hidden';
-                if (deleteBtn) {
-                    deleteBtn.style.visibility = (items.length === 1) ? 'hidden' : 'visible';
-                }
-            } else {
-                if (deleteBtn) deleteBtn.style.visibility = 'visible';
-            }
-        });
-    }
-
-    // Fungsi untuk mengumpulkan URL dan update textarea tersembunyi
-    function updateHiddenTextarea() {
-        const urls = [];
-        const inputs = imageListContainer.querySelectorAll('.image-url-input');
-        inputs.forEach(input => {
-            const url = input.value.trim();
-            if (url) {
-                urls.push(url);
-            }
-        });
+    // Simpan semua URL ke textarea tersembunyi
+    function saveToTextarea() {
+        const urls = Array.from(container.querySelectorAll('input'))
+            .map(el => el.value.trim())
+            .filter(val => val !== '');
         hiddenTextarea.value = urls.join('\n');
     }
 
-        // === INISIALISASI YANG DIJAMIN JALAN ===
-    const initialText = hiddenTextarea.value || '';
-    const initialUrls = initialText
+    // === INISIALISASI ===
+    // Baca nilai awal dari textarea (misal saat edit)
+    const initialUrls = (hiddenTextarea.value || '')
         .split('\n')
-        .map(url => url.trim())
-        .filter(url => url !== '');
+        .map(s => s.trim())
+        .filter(s => s);
 
-    // Buat input untuk setiap URL yang valid
-    initialUrls.forEach(url => {
-        createImageUrlItem(url);
-    });
+    // Render input berdasarkan data awal
+    if (initialUrls.length > 0) {
+        initialUrls.forEach(url => createInput(url));
+    }
 
-    // Jika tidak ada URL sama sekali, buat satu input kosong
+    // Jika tidak ada data, buat satu input kosong
     if (initialUrls.length === 0) {
-        createImageUrlItem(); // input kosong pertama
+        createInput();
     }
 
-    // Tambahkan event submit jika form ada
-    if (productForm) {
-        productForm.addEventListener('submit', updateHiddenTextarea);
+    // Pastikan textarea terupdate saat submit
+    if (form) {
+        form.addEventListener('submit', saveToTextarea);
     }
-
-    console.log('✅ Input gambar siap. Total URL:', initialUrls.length);
 });
 </script>
 {% endblock extra_js %}
