@@ -45,19 +45,17 @@
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
 
                 {% if field.name == 'image_urls' %}
+                    <!-- Area untuk input dinamis -->
                     <div id="image-url-list"></div>
-                    <!-- Biarkan Django render field asli -->
+                    <!-- Biarkan Django render field asli (akan disembunyikan) -->
                     {{ field }}
-                    {% if field.help_text %}
-                        <small class="helptext">{{ field.help_text }}</small>
-                    {% endif %}
                 {% else %}
                     {{ field }}
-                    {% if field.help_text %}
-                        <small class="helptext">{{ field.help_text }}</small>
-                    {% endif %}
                 {% endif %}
 
+                {% if field.help_text %}
+                    <small class="helptext">{{ field.help_text }}</small>
+                {% endif %}
                 {% if field.errors %}
                     <ul class="errorlist">
                         {% for error in field.errors %}
@@ -71,76 +69,62 @@
         <button type="submit" class="btn btn-submit">Simpan Produk</button>
     </form>
 </div>
-{% endblock content %}
+{% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('image-url-list');
-    const hiddenTextarea = document.getElementById('id_image_urls');
-    const form = document.getElementById('product-form');
+    const textarea = document.getElementById('id_image_urls');
 
-    if (!container || !hiddenTextarea) {
-        console.error('❌ Elemen image_urls tidak ditemukan.');
-        return;
-    }
+    if (!container || !textarea) return;
 
-    // 🔽 Sembunyikan textarea asli dari Django
-    hiddenTextarea.style.display = 'none';
+    // Sembunyikan textarea asli
+    textarea.style.display = 'none';
 
-    function createInput(url = '') {
+    // Buat input baru
+    function addInput(url = '') {
         const div = document.createElement('div');
         div.className = 'image-url-item';
+        div.innerHTML = `
+            <input type="url" value="${url}" placeholder="https://contoh.com/gambar.jpg" style="flex:1; padding:6px; margin-right:6px; border:1px solid #ccc; border-radius:4px;">
+            <button type="button" style="padding:6px 10px; background:#e74c3c; color:white; border:none; border-radius:4px; cursor:pointer;">Hapus</button>
+        `;
 
-        const input = document.createElement('input');
-        input.type = 'url';
-        input.placeholder = 'https://contoh.com/gambar.jpg';
-        input.value = url;
-
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = 'Hapus';
-        removeBtn.type = 'button';
-
-        removeBtn.addEventListener('click', () => {
+        // Hapus item
+        div.querySelector('button').onclick = () => {
             div.remove();
-            updateTextarea();
-        });
+            syncToTextarea();
+        };
 
-        input.addEventListener('input', () => {
-            updateTextarea();
+        // Tambah input baru saat diisi
+        const input = div.querySelector('input');
+        input.oninput = () => {
+            syncToTextarea();
             const inputs = container.querySelectorAll('input');
-            const lastInput = inputs[inputs.length - 1];
-            if (input === lastInput && input.value.trim() !== '') {
-                createInput();
+            const isLast = input === inputs[inputs.length - 1];
+            if (isLast && input.value.trim() !== '') {
+                addInput(); // tambah input baru
             }
-        });
+        };
 
-        div.appendChild(input);
-        div.appendChild(removeBtn);
         container.appendChild(div);
     }
 
-    function updateTextarea() {
+    // Sinkronkan ke textarea
+    function syncToTextarea() {
         const urls = Array.from(container.querySelectorAll('input'))
             .map(el => el.value.trim())
-            .filter(val => val !== '');
-        hiddenTextarea.value = urls.join('\n');
+            .filter(v => v);
+        textarea.value = urls.join('\n');
     }
 
     // === INISIALISASI ===
-    const initialUrls = (hiddenTextarea.value || '')
-        .split('\n')
-        .map(s => s.trim())
-        .filter(s => s);
-
-    if (initialUrls.length > 0) {
-        initialUrls.forEach(url => createInput(url));
+    const saved = (textarea.value || '').split('\n').filter(v => v.trim());
+    if (saved.length) {
+        saved.forEach(url => addInput(url));
     } else {
-        createInput(); // minimal satu input
-    }
-
-    if (form) {
-        form.addEventListener('submit', updateTextarea);
+        addInput(); // minimal 1 input
     }
 });
 </script>
