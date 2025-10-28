@@ -32,6 +32,80 @@
             box-sizing: border-box;
         }
 
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .carousel-slide-wrapper {
+            display: flex;
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            width: 100%;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1; /* Rasio 1:1, sama seperti card */
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-prev,
+        .carousel-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            z-index: 10;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .carousel-prev:hover,
+        .carousel-next:hover {
+            opacity: 1;
+        }
+
+        .carousel-prev { left: 10px; }
+        .carousel-next { right: 10px; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .carousel-dot.active {
+            background-color: var(--white);
+        }
+
         /* ----- NAVIGASI (Tidak berubah) ----- */
         nav {
             background-color: var(--dark-blue-1);
@@ -410,6 +484,71 @@
                     }
                 });
             }
+
+            const carousel = document.getElementById('productCarousel');
+            if (carousel) {
+                const wrapper = carousel.querySelector('.carousel-slide-wrapper');
+                const items = carousel.querySelectorAll('.carousel-item');
+                const prevBtn = carousel.querySelector('.carousel-prev');
+                const nextBtn = carousel.querySelector('.carousel-next');
+                const dotsContainer = carousel.querySelector('.carousel-dots');
+                
+                let currentIndex = 0;
+                const totalItems = items.length;
+
+                // Buat Dots
+                if (dotsContainer) {
+                    for (let i = 0; i < totalItems; i++) {
+                        const dot = document.createElement('button');
+                        dot.classList.add('carousel-dot');
+                        dot.addEventListener('click', () => {
+                            goToSlide(i);
+                        });
+                        dotsContainer.appendChild(dot);
+                    }
+                }
+                const dots = dotsContainer ? dotsContainer.querySelectorAll('.carousel-dot') : [];
+
+                function updateCarousel() {
+                    wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    
+                    if (dots.length > 0) {
+                        dots.forEach(dot => dot.classList.remove('active'));
+                        dots[currentIndex].classList.add('active');
+                    }
+                    
+                    if(prevBtn) prevBtn.style.display = (currentIndex === 0) ? 'none' : 'block';
+                    if(nextBtn) nextBtn.style.display = (currentIndex === totalItems - 1) ? 'none' : 'block';
+                }
+
+                function goToSlide(index) {
+                    currentIndex = index;
+                    updateCarousel();
+                }
+
+                if(nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        if (currentIndex < totalItems - 1) {
+                            currentIndex++;
+                            updateCarousel();
+                        }
+                    });
+                }
+                
+                if(prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                            updateCarousel();
+                        }
+                    });
+                }
+                
+                // Set kondisi awal
+                updateCarousel();
+            }
+            // --- AKHIR KODE CAROUSEL ---
+            
         });
     </script>
 

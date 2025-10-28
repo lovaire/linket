@@ -6,11 +6,27 @@
 <div class="product-detail-container">
     
     <div class="product-detail-gallery">
-        {% for image_url in product.get_image_list %}
-            <img src="{{ image_url }}" alt="Gambar {{ product.name }}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem;">
-        {% empty %}
-            <img src="{{ product.get_cover_image }}" alt="Gambar {{ product.name }}" style="width: 100%; border-radius: 8px;">
-        {% endfor %}
+        <div class="carousel-container" id="productCarousel">
+            <div class="carousel-slide-wrapper">
+                
+                {% for image_url in product.get_image_list %}
+                <div class="carousel-item">
+                    <img src="{{ image_url }}" alt="Gambar {{ product.name }}">
+                </div>
+                {% empty %}
+                <div class="carousel-item">
+                    <img src="{{ product.get_cover_image }}" alt="Gambar {{ product.name }}">
+                </div>
+                {% endfor %}
+                
+            </div>
+            
+            {% if product.get_image_list|length > 1 %}
+                <button type="button" class="carousel-prev">&lt;</button>
+                <button type="button" class="carousel-next">&gt;</button>
+                <div class="carousel-dots"></div>
+            {% endif %}
+        </div>
     </div>
     
     <div class="product-detail-info">
