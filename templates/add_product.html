@@ -145,6 +145,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const hiddenTextarea = document.getElementById('id_image_urls'); // ID default Django
     const productForm = document.getElementById('product-form');
 
+    // Fungsi debounce untuk membatasi pemanggilan berulang
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
     // Fungsi untuk membuat elemen input baru
     function createImageUrlItem(url = '') {
         const div = document.createElement('div');
@@ -176,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         moveDownBtn.classList.add('btn-move-down');
         moveDownBtn.innerHTML = '&#9660;'; // Panah bawah
         moveDownBtn.title = 'Geser ke bawah';
-        
+
         const deleteBtn = document.createElement('button');
         deleteBtn.type = 'button';
         deleteBtn.classList.add('btn-delete');
@@ -190,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         div.appendChild(previewDiv);
         div.appendChild(input);
         div.appendChild(actionsDiv);
-        
+
         imageListContainer.appendChild(div);
         updateActionListeners(div); // Tambahkan listener ke item baru
         updateHiddenTextarea(); // Update nilai textarea tersembunyi
@@ -206,24 +219,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const moveDownBtn = itemDiv.querySelector('.btn-move-down');
 
         // Listener untuk input baru saat user mengetik
-        input.addEventListener('input', () => {
-             // Update preview saat mengetik (opsional, bisa diganti 'blur')
+        input.addEventListener('input', debounce(() => {
             const url = input.value.trim();
-             previewDiv.style.backgroundImage = url ? `url(${url})` : 'none'; 
+            previewDiv.style.backgroundImage = url ? `url(${url})` : 'none';
             checkAndAddNewInput();
             updateHiddenTextarea();
-        });
-        
-        // Listener untuk preview saat input kehilangan fokus (lebih efisien)
+        }, 300));
+
+        // Listener untuk preview saat input kehilangan fokus
         input.addEventListener('blur', () => {
-             const url = input.value.trim();
-             previewDiv.style.backgroundImage = url ? `url(${url})` : 'none'; 
+            const url = input.value.trim();
+            previewDiv.style.backgroundImage = url ? `url(${url})` : 'none';
         });
 
         // Hapus item
         deleteBtn.addEventListener('click', () => {
             itemDiv.remove();
-            checkAndAddNewInput(); // Pastikan selalu ada 1 input kosong jika semua dihapus
+            checkAndAddNewInput();
             updateHiddenTextarea();
         });
 
@@ -250,36 +262,39 @@ document.addEventListener('DOMContentLoaded', function() {
     function checkAndAddNewInput() {
         const inputs = imageListContainer.querySelectorAll('.image-url-input');
         const lastInput = inputs[inputs.length - 1];
-        // Jika tidak ada input sama sekali, atau input terakhir tidak kosong
-        if (!lastInput || lastInput.value.trim() !== '') {
+
+        // Cek apakah ada input kosong
+        const hasEmptyInput = Array.from(inputs).some(input => input.value.trim() === '');
+
+        // Tambahkan input baru hanya jika tidak ada input kosong dan input terakhir ada isinya
+        if (!hasEmptyInput && lastInput && lastInput.value.trim() !== '') {
             createImageUrlItem();
         }
-        updateButtonVisibility(); // Update visibilitas tombol panah
+        updateButtonVisibility();
     }
 
     // Fungsi untuk update visibilitas tombol panah
     function updateButtonVisibility() {
-         const items = imageListContainer.querySelectorAll('.image-url-item');
-         items.forEach((item, index) => {
-             const upBtn = item.querySelector('.btn-move-up');
-             const downBtn = item.querySelector('.btn-move-down');
-             if (upBtn) upBtn.style.visibility = (index === 0) ? 'hidden' : 'visible';
-             if (downBtn) downBtn.style.visibility = (index === items.length - 1) ? 'hidden' : 'visible';
-             // Khusus untuk item terakhir yang kosong, sembunyikan semua tombol
-             if (index === items.length - 1 && item.querySelector('.image-url-input').value.trim() === '') {
-                 if (upBtn) upBtn.style.visibility = 'hidden';
-                 if (downBtn) downBtn.style.visibility = 'hidden';
-                 // Sembunyikan tombol delete juga jika hanya ada 1 input kosong
-                 const deleteBtn = item.querySelector('.btn-delete');
-                 if(deleteBtn && items.length === 1) deleteBtn.style.visibility = 'hidden';
-                 else if(deleteBtn) deleteBtn.style.visibility = 'visible';
-             } else {
-                 const deleteBtn = item.querySelector('.btn-delete');
-                  if(deleteBtn) deleteBtn.style.visibility = 'visible';
-             }
-         });
+        const items = imageListContainer.querySelectorAll('.image-url-item');
+        items.forEach((item, index) => {
+            const upBtn = item.querySelector('.btn-move-up');
+            const downBtn = item.querySelector('.btn-move-down');
+            if (upBtn) upBtn.style.visibility = (index === 0) ? 'hidden' : 'visible';
+            if (downBtn) downBtn.style.visibility = (index === items.length - 1) ? 'hidden' : 'visible';
+            // Khusus untuk item terakhir yang kosong, sembunyikan semua tombol
+            if (index === items.length - 1 && item.querySelector('.image-url-input').value.trim() === '') {
+                if (upBtn) upBtn.style.visibility = 'hidden';
+                if (downBtn) downBtn.style.visibility = 'hidden';
+                // Sembunyikan tombol delete juga jika hanya ada 1 input kosong
+                const deleteBtn = item.querySelector('.btn-delete');
+                if (deleteBtn && items.length === 1) deleteBtn.style.visibility = 'hidden';
+                else if (deleteBtn) deleteBtn.style.visibility = 'visible';
+            } else {
+                const deleteBtn = item.querySelector('.btn-delete');
+                if (deleteBtn) deleteBtn.style.visibility = 'visible';
+            }
+        });
     }
-
 
     // Fungsi untuk mengumpulkan URL dan update textarea tersembunyi
     function updateHiddenTextarea() {
@@ -294,19 +309,20 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenTextarea.value = urls.join('\n'); // Gabungkan dengan baris baru
         updateButtonVisibility();
     }
-    
+
     // Inisialisasi: Baca dari textarea jika ada nilai awal (misal saat edit)
     const initialUrls = hiddenTextarea.value.split('\n').filter(url => url.trim() !== '');
     if (initialUrls.length > 0) {
         initialUrls.forEach(url => createImageUrlItem(url));
     }
-    
-    // Selalu tambahkan satu input kosong di awal jika belum ada
-    checkAndAddNewInput();
+
+    // Tambahkan input kosong hanya jika tidak ada input sama sekali
+    if (imageListContainer.querySelectorAll('.image-url-item').length === 0) {
+        createImageUrlItem();
+    }
 
     // Pastikan textarea terupdate sebelum form disubmit
     productForm.addEventListener('submit', updateHiddenTextarea);
-
 });
 </script>
 {% endblock extra_js %}
